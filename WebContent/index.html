@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<title>Insert title here</title>
+</head>
+<body>
+	<form id="idform">
+		Nome: <input type="text" id="idnome" name="nome" /> 
+		Idade: <input type="number" id="ididade" name="idade" /> 
+		<input type="submit" id="submit" value="Inserir" />
+	</form>
+
+	<table id="idtable"></table>
+
+
+	<script>
+function formToJSON(){
+    return JSON.stringify({
+        "nome": $('#idnome').val(),
+        "idade": $('#ididade').val(),
+        });
+}
+
+function atualiza(){
+	$.getJSON("http://localhost:8080/DBRest/rest/le",
+			function(data){
+				$("#idtable").empty();
+				$.each(data, function(key,val) {
+					var row = '<tr><td>nome: ' + val.nome + '</td><td>idade: ' + val.idade + '</td></tr>';
+					$('#idtable').append(row);
+				});
+			});
+	
+}
+
+	$(document).ready(function(){
+		atualiza();
+		$("#idform").on('submit', function(e){
+		    e.preventDefault();
+			console.log(formToJSON());
+		    $.ajax({
+				url : 'http://localhost:8080/DBRest/rest/escreve',
+				type : "POST",     
+				data : formToJSON(),
+			    contentType: "application/json",
+// 			    success:function(res){
+// 			        alert("it works!");
+// 			    },
+// 			    error:function(res){
+// 			        alert("Bad thing happend! " + res.statusText);
+// 			    }
+			})
+			atualiza();
+		});
+	});
+</script>
+</body>
+</html>
