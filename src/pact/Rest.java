@@ -15,8 +15,10 @@ import repo.Repo;
 
 @Path("/")
 public class Rest {
+	
 	Gson gson = new Gson();
-
+	Pessoa p = new Pessoa();
+	
 	@POST
 	@Path("escreve")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -30,8 +32,25 @@ public class Rest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String le() {
 		List<Pessoa> list = Repo.le();
-		String json = new Gson().toJson(list);
+		String json = gson.toJson(list);
 		return json;
+	}
+	
+	@POST
+	@Path("loja")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void loja(String dado){
+		Repo.seleciona(gson.fromJson(dado, Pessoa.class));
+		p = gson.fromJson(dado, Pessoa.class);
+		System.out.println(p);
+	}
+	
+	@GET
+	@Path("lojale")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String lojale() {
+		System.out.println(p);
+		return gson.toJson(Repo.retorna());
 	}
 	
 	

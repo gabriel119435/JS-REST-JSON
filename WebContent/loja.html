@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Loja</title>
+</head>
+<body>
+	<h1 id='id'></h1>
+
+	<script>
+		window.onload = function() {
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function() {
+				if (ajax.readyState == XMLHttpRequest.DONE) {
+					console.log('status do ajax: ' + ajax.status);
+					var json = JSON.parse(ajax.responseText);
+					var s = "";
+					s += 'nome:' + json.nome;
+					s += ' idade:' + json.idade;
+					document.getElementById("id").innerHTML = s;
+				}
+			}
+			ajax.open("GET", "http://localhost:8080/DBRest/rest/lojale", true);
+			ajax.send(null);
+		}
+	</script>
+</body>
+</html>

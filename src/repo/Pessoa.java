@@ -22,15 +22,6 @@ public class Pessoa {
 
 	@Override
 	public String toString() {
-		return nome + "-" + idade;
+		return this.nome + "-" + this.idade;
 	}
-
-	public Pessoa(String nome, int idade) {
-		this.nome = nome;
-		this.idade = idade;
-	}
-
-	public Pessoa() {
-	}
-
 }

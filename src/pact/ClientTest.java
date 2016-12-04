@@ -6,13 +6,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import org.json.JSONException;
 import com.google.gson.Gson;
 
 import repo.Pessoa;
 
 public class ClientTest {
-	public static void main(String[] args) throws IOException, JSONException {
+	public static void main(String[] args) throws IOException {
 
 		Gson gson = new Gson();
 		String string = "";

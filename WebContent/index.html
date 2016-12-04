@@ -3,58 +3,112 @@
 <head>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<title>Insert title here</title>
+<meta charset="UTF-8">
+<title>Index</title>
 </head>
 <body>
 	<form id="idform">
-		Nome: <input type="text" id="idnome" name="nome" /> 
-		Idade: <input type="number" id="ididade" name="idade" /> 
-		<input type="submit" id="submit" value="Inserir" />
+		Nome: <input type="text" id="idnome" name="nome" /> Idade: <input
+			type="number" id="ididade" name="idade" /> <input type="submit"
+			id="submit" value="Inserir" />
 	</form>
 
 	<table id="idtable"></table>
 
 
 	<script>
-function formToJSON(){
-    return JSON.stringify({
-        "nome": $('#idnome').val(),
-        "idade": $('#ididade').val(),
-        });
-}
-
-function atualiza(){
-	$.getJSON("http://localhost:8080/DBRest/rest/le",
-			function(data){
-				$("#idtable").empty();
-				$.each(data, function(key,val) {
-					var row = '<tr><td>nome: ' + val.nome + '</td><td>idade: ' + val.idade + '</td></tr>';
-					$('#idtable').append(row);
-				});
+		function dataToJSON(a,b){
+			return JSON.stringify({
+				"nome" : a,
+				"idade" : b,
 			});
+		}
 	
-}
+		function formToJSON() {
+			return JSON.stringify({
+				"nome" : document.getElementById("idnome").value,
+				"idade" : document.getElementById("ididade").value,
+			});
+		}
 
-	$(document).ready(function(){
-		atualiza();
-		$("#idform").on('submit', function(e){
-		    e.preventDefault();
-			console.log(formToJSON());
-		    $.ajax({
-				url : 'http://localhost:8080/DBRest/rest/escreve',
-				type : "POST",     
-				data : formToJSON(),
-			    contentType: "application/json",
-// 			    success:function(res){
-// 			        alert("it works!");
-// 			    },
-// 			    error:function(res){
-// 			        alert("Bad thing happend! " + res.statusText);
-// 			    }
-			})
+		function empty(x) {
+			if (x == "" || x == null)
+				return true;
+			return false;
+		}
+
+		function loja(i,nome,idade) {
+			console.log(i);
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function() {
+				if (ajax.readyState == XMLHttpRequest.DONE) {
+						console.log('status de carregar a loja: ' + ajax.status);
+				}
+			}
+			ajax.open("POST", "http://localhost:8080/DBRest/rest/loja",true);
+			ajax.setRequestHeader("Content-Type", "application/json");
+			ajax.send(dataToJSON(nome,idade));
+			console.log('dado enviado pra loja: ' + dataToJSON(nome,idade));
+			window.location = 'http://localhost:8080/DBRest/loja.html'; 
+		}
+
+		//RECEBE
+		function atualiza() {
+			console.log("atualiza");
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function() {
+				if (ajax.readyState == XMLHttpRequest.DONE) {
+					if (ajax.status == 200) {
+						$('#idtable').empty();
+						var table = document.getElementById("idtable");
+						var json = JSON.parse(ajax.responseText);
+						for ( var i in json) {
+							var row = table.insertRow(0);
+							var cel1 = row.insertCell(0);
+							var cel2 = row.insertCell(1);
+							var cel3 = row.insertCell(2);
+							cel1.innerHTML = json[i].nome;
+							cel2.innerHTML = json[i].idade;
+							var b = document.createElement("BUTTON");
+							b.id = i;
+							var t = document.createTextNode("Loja");
+							b.appendChild(t);
+							b.onclick = function(event) {
+								loja(this.id,json[this.id].nome,json[this.id].idade);
+							}
+							cel3.appendChild(b);
+						}
+					} else
+						console.log('atualiza ruim: ' + ajax.status);
+				}
+			};
+			ajax.open("GET", "http://localhost:8080/DBRest/rest/le", true);
+			ajax.send(null);
+		}
+
+		window.onload = function() {
+			//ENVIA
+			document.getElementById("submit").onclick = function(event) {
+				event.preventDefault();
+				if (empty(document.getElementById("idnome").value)
+						|| empty(document.getElementById("ididade").value))
+					return false;
+				var ajax = new XMLHttpRequest();
+				ajax.onreadystatechange = function() {
+					if (ajax.readyState == XMLHttpRequest.DONE) {
+						atualiza();
+						if (ajax.status != 204) {
+							console.log('submit ruim: ' + ajax.status);
+						}
+					}
+				}
+				ajax.open("POST", "http://localhost:8080/DBRest/rest/escreve",
+						true);
+				ajax.setRequestHeader("Content-Type", "application/json");
+				ajax.send(formToJSON());
+			}
 			atualiza();
-		});
-	});
-</script>
+		}
+	</script>
 </body>
 </html>
