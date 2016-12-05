@@ -8,7 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import com.google.gson.Gson;
 
-import repo.Pessoa;
+import repo.Loja;
 
 public class ClientTest {
 	public static void main(String[] args) throws IOException {
@@ -54,9 +54,9 @@ public class ClientTest {
 		}
 		br.close();
 		System.out.println("banco:");
-		Pessoa[] list = gson.fromJson(sb.toString(), Pessoa[].class);
+		Loja[] list = gson.fromJson(sb.toString(), Loja[].class);
 		int i = 0;
-		for (Pessoa p : list) {
+		for (Loja p : list) {
 			i++;
 			System.out.println(p);
 		}

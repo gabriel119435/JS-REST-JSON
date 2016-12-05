@@ -5,8 +5,8 @@
 <title>Loja</title>
 </head>
 <body>
+	<button id='idb'>voltar</button>
 	<h1 id='id'></h1>
-
 	<script>
 		window.onload = function() {
 			var ajax = new XMLHttpRequest();
@@ -16,12 +16,43 @@
 					var json = JSON.parse(ajax.responseText);
 					var s = "";
 					s += 'nome:' + json.nome;
-					s += ' idade:' + json.idade;
+					s += ' cnpj:' + json.cnpj;
+					s += ' template:' + json.template
 					document.getElementById("id").innerHTML = s;
+					
+					console.log(json.template);
+					var color;
+					switch(json.template) {
+				    	case '1':
+				    		color = "blue";
+				        	break;
+				   		case '2':
+				   			color = "red";
+				        	break;
+				   		case '3':
+				   			color = "green";
+				        	break;
+				   		case '4':
+				   			color = "yellow";
+				        	break;
+				   		case '5':
+				   			color = "purple";
+				        	break;
+					}
+					document.body.style.background = color;
 				}
 			}
 			ajax.open("GET", "http://localhost:8080/DBRest/rest/lojale", true);
 			ajax.send(null);
+			
+			
+			document.getElementById("idb").onclick = function(event) {
+				window.location = 'http://localhost:8080/DBRest/index.html'; 
+			}
+			
+			
+			
+			
 		}
 	</script>
 </body>

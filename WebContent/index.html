@@ -8,26 +8,47 @@
 </head>
 <body>
 	<form id="idform">
-		Nome: <input type="text" id="idnome" name="nome" /> Idade: <input
-			type="number" id="ididade" name="idade" /> <input type="submit"
-			id="submit" value="Inserir" />
+		Nome: <input type="text" id="idnome" name="nome" /> 
+		cnpj: <input type="number" id="idcnpj" name="cnpj" /><br>
+		
+		<div id='idradio'></div>
+		
+		<script type="text/javascript">
+		var div = document.getElementById("idradio");
+		for(i=1;i<=5;i++){
+			var label = document.createElement("label");
+			var radio = document.createElement("input");
+			radio.setAttribute("type","radio");
+			radio.setAttribute("name","template");
+			radio.setAttribute("id","r"+i);
+			radio.setAttribute("value",i);
+			label.innerHTML = "modelo " + i;
+			label.appendChild(radio);
+			div.appendChild(label);
+		}
+		</script>
+		
+		<input type="submit" id="submit" value="Inserir" />		
 	</form>
 
 	<table id="idtable"></table>
 
 
 	<script>
-		function dataToJSON(a,b){
+		function dataToJSON(a,b,c){
 			return JSON.stringify({
 				"nome" : a,
-				"idade" : b,
+				"cnpj" : b,
+				"template" : c,
 			});
 		}
-	
+		
+		
 		function formToJSON() {
 			return JSON.stringify({
 				"nome" : document.getElementById("idnome").value,
-				"idade" : document.getElementById("ididade").value,
+				"cnpj" : document.getElementById("idcnpj").value,
+				"template" : document.querySelector('input[name=template]:checked').value,
 			});
 		}
 
@@ -37,7 +58,7 @@
 			return false;
 		}
 
-		function loja(i,nome,idade) {
+		function loja(i,nome,cnpj,template) {
 			console.log(i);
 			var ajax = new XMLHttpRequest();
 			ajax.onreadystatechange = function() {
@@ -47,12 +68,11 @@
 			}
 			ajax.open("POST", "http://localhost:8080/DBRest/rest/loja",true);
 			ajax.setRequestHeader("Content-Type", "application/json");
-			ajax.send(dataToJSON(nome,idade));
-			console.log('dado enviado pra loja: ' + dataToJSON(nome,idade));
+			ajax.send(dataToJSON(nome,cnpj,template));
 			window.location = 'http://localhost:8080/DBRest/loja.html'; 
 		}
 
-		//RECEBE
+		
 		function atualiza() {
 			console.log("atualiza");
 			var ajax = new XMLHttpRequest();
@@ -68,13 +88,13 @@
 							var cel2 = row.insertCell(1);
 							var cel3 = row.insertCell(2);
 							cel1.innerHTML = json[i].nome;
-							cel2.innerHTML = json[i].idade;
+							cel2.innerHTML = json[i].cnpj;
 							var b = document.createElement("BUTTON");
 							b.id = i;
 							var t = document.createTextNode("Loja");
 							b.appendChild(t);
 							b.onclick = function(event) {
-								loja(this.id,json[this.id].nome,json[this.id].idade);
+								loja(this.id , json[this.id].nome , json[this.id].cnpj , json[this.id].template);
 							}
 							cel3.appendChild(b);
 						}
@@ -87,12 +107,15 @@
 		}
 
 		window.onload = function() {
-			//ENVIA
 			document.getElementById("submit").onclick = function(event) {
+				
 				event.preventDefault();
 				if (empty(document.getElementById("idnome").value)
-						|| empty(document.getElementById("ididade").value))
+						|| empty(document.getElementById("idcnpj").value)
+						|| empty(document.querySelector('input[name=template]:checked'))){
+					alert("falta preencher algo")
 					return false;
+				}	
 				var ajax = new XMLHttpRequest();
 				ajax.onreadystatechange = function() {
 					if (ajax.readyState == XMLHttpRequest.DONE) {
@@ -106,6 +129,7 @@
 						true);
 				ajax.setRequestHeader("Content-Type", "application/json");
 				ajax.send(formToJSON());
+				
 			}
 			atualiza();
 		}

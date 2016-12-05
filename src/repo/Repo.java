@@ -4,24 +4,23 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Repo {
-	static private List<Pessoa> repo = new ArrayList<Pessoa>();
-	static private Pessoa escolhida = new Pessoa();
+	static private List<Loja> repo = new ArrayList<Loja>();
+	static private Loja escolhida = new Loja();
 
-	public static void escreve(Pessoa p) {
+	public static void escreve(Loja p) {
 		repo.add(p);
 	}
 
-	public static List<Pessoa> le() {
+	public static List<Loja> le() {
 		return repo;
 	}	
 	
-	public static void seleciona(Pessoa p){
+	public static void seleciona(Loja p){
 		escolhida = p;
 	}
 	
-	public static Pessoa retorna(){
+	public static Loja retorna(){
 		return escolhida;
 	}
-	
 	
 }
