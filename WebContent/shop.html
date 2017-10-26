@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Loja</title>
+<style type="text/css">
+/* The Modal (background) */
+.modalBg {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place with scrolls and shit */
+	z-index: 1;
+	/* Sit on top. Lower number makes this go behind of bigger numbers */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+	background-color: #ffffff;
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 10px; /* generate space around content */
+	border: 2px solid #888; /* thickness, type and color */
+	width: 70%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+	color: #aaa;
+	float: right; /*floats towards right till the end*/
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+</style>
+
+</head>
+<body>
+	<button id='idback'>go back</button>
+	<button id="idbmodal">insert new fridge</button>
+	<h1 id='id'></h1>
+
+	<!-- The Modal -->
+	<div id="modalBackground" class="modalBg">
+
+		<!-- Modal content -->
+		<div class="modal-content">
+			<span class="close" id="idclose">&times;</span>
+			<form id="idform">
+				<label for="idbrand">Brand:</label> 
+				<input type="text" id="idbrand" name="brand" /> 
+				<label for="idmodel">Model:</label> 
+				<input type="text" id="idmodel" name="model" />
+				<input type="submit" id="submit" value="create new fridge" />
+			</form>
+			<table id="idtable"></table>
+		</div>
+
+	</div>
+
+
+	<script>
+		window.onload = function() {
+
+			var ajax = new XMLHttpRequest();
+			ajax.onreadystatechange = function() {
+				if (ajax.readyState == XMLHttpRequest.DONE) {
+					var json = JSON.parse(ajax.responseText);
+					var s = "";
+					s += 'name:' + json.name;
+					s += ' cnpj:' + json.cnpj;
+					s += ' template:' + json.template
+					document.getElementById("id").innerHTML = s;
+					var color;
+					var position;
+					switch (json.template) {
+					case '1':
+						color = "blue";
+						position = "right";
+						break;
+					case '2':
+						color = "red";
+						position = "right";
+						break;
+					case '3':
+						color = "green";
+						position = "center";
+						break;
+					case '4':
+						color = "yellow";
+						position = "left";
+						break;
+					case '5':
+						color = "purple";
+						position = "left";
+						break;
+					}
+					document.getElementById("id").style.textAlign = position;
+					document.body.style.background = color;
+				}
+			}
+			ajax.open("GET", "http://localhost:8080/DBRest/rest/shop/read",true);
+			ajax.send(null);
+
+			document.getElementById("idback").onclick = function(event) {
+				window.location = 'http://localhost:8080/DBRest/index.html';
+			}
+
+			var mb = document.getElementById('modalBackground');
+			document.getElementById("idbmodal").onclick = function() {
+				mb.style.display = "block";
+			}
+			document.getElementById("idclose").onclick = function() {
+				mb.style.display = "none";
+			}
+			window.onclick = function(event) {
+				if (event.target == mb) {
+					mb.style.display = "none";
+				}
+			}
+
+		}
+	</script>
+</body>
+</html>

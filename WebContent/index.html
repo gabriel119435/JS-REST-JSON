@@ -1,137 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="util.js" type="text/javascript"></script>
 <meta charset="UTF-8">
-<title>Index</title>
+<title>Stores</title>
 </head>
 <body>
 	<form id="idform">
-		Nome: <input type="text" id="idnome" name="nome" /> 
-		cnpj: <input type="number" id="idcnpj" name="cnpj" /><br>
-		
+		<label for="idname">Name:</label> 
+		<input type="text" id="idname" name="name" /> 
+		<label for="idcnpj">CNPJ:</label> 
+		<input type="number" id="idcnpj" name="cnpj" />
 		<div id='idradio'></div>
-		
 		<script type="text/javascript">
-		var div = document.getElementById("idradio");
-		for(i=1;i<=5;i++){
-			var label = document.createElement("label");
-			var radio = document.createElement("input");
-			radio.setAttribute("type","radio");
-			radio.setAttribute("name","template");
-			radio.setAttribute("id","r"+i);
-			radio.setAttribute("value",i);
-			label.innerHTML = "modelo " + i;
-			label.appendChild(radio);
-			div.appendChild(label);
-		}
+			var div = document.getElementById("idradio");
+			for (i = 1; i <= 5; i++) {
+				var label = document.createElement("label");
+				var radio = document.createElement("input");
+				radio.setAttribute("type", "radio");
+				radio.setAttribute("name", "template");
+				radio.setAttribute("id", "r" + i);
+				radio.setAttribute("value", i);
+				label.innerHTML = "template " + i;
+				label.appendChild(radio);
+				div.appendChild(label);
+			}
 		</script>
-		
-		<input type="submit" id="submit" value="Inserir" />		
+		<input type="submit" id="submit" value="create new shop" />
+		<button type="button" id="clean">erase form</button>
 	</form>
+	
 
 	<table id="idtable"></table>
 
 
 	<script>
-		function dataToJSON(a,b,c){
-			return JSON.stringify({
-				"nome" : a,
-				"cnpj" : b,
-				"template" : c,
-			});
-		}
-		
-		
-		function formToJSON() {
-			return JSON.stringify({
-				"nome" : document.getElementById("idnome").value,
-				"cnpj" : document.getElementById("idcnpj").value,
-				"template" : document.querySelector('input[name=template]:checked').value,
-			});
-		}
-
-		function empty(x) {
-			if (x == "" || x == null)
-				return true;
-			return false;
-		}
-
-		function loja(i,nome,cnpj,template) {
-			console.log(i);
-			var ajax = new XMLHttpRequest();
-			ajax.onreadystatechange = function() {
-				if (ajax.readyState == XMLHttpRequest.DONE) {
-						console.log('status de carregar a loja: ' + ajax.status);
-				}
-			}
-			ajax.open("POST", "http://localhost:8080/DBRest/rest/loja",true);
-			ajax.setRequestHeader("Content-Type", "application/json");
-			ajax.send(dataToJSON(nome,cnpj,template));
-			window.location = 'http://localhost:8080/DBRest/loja.html'; 
-		}
-
-		
-		function atualiza() {
-			console.log("atualiza");
-			var ajax = new XMLHttpRequest();
-			ajax.onreadystatechange = function() {
-				if (ajax.readyState == XMLHttpRequest.DONE) {
-					if (ajax.status == 200) {
-						$('#idtable').empty();
-						var table = document.getElementById("idtable");
-						var json = JSON.parse(ajax.responseText);
-						for ( var i in json) {
-							var row = table.insertRow(0);
-							var cel1 = row.insertCell(0);
-							var cel2 = row.insertCell(1);
-							var cel3 = row.insertCell(2);
-							cel1.innerHTML = json[i].nome;
-							cel2.innerHTML = json[i].cnpj;
-							var b = document.createElement("BUTTON");
-							b.id = i;
-							var t = document.createTextNode("Loja");
-							b.appendChild(t);
-							b.onclick = function(event) {
-								loja(this.id , json[this.id].nome , json[this.id].cnpj , json[this.id].template);
-							}
-							cel3.appendChild(b);
-						}
-					} else
-						console.log('atualiza ruim: ' + ajax.status);
-				}
-			};
-			ajax.open("GET", "http://localhost:8080/DBRest/rest/le", true);
-			ajax.send(null);
+		function goToShop(name, cnpj, template) {
+			var sendShop = new XMLHttpRequest();
+			sendShop.open("POST", "http://localhost:8080/DBRest/rest/shop/insert",
+					true);
+			sendShop.setRequestHeader("Content-Type", "application/json");
+			sendShop.send(dataToJSON(name, cnpj, template));
+			window.location = "http://localhost:8080/DBRest/shop.html";
 		}
 
 		window.onload = function() {
+			
+			document.getElementById("clean").onclick = function(event){
+				document.getElementById("idname").value = "";
+				document.getElementById("idcnpj").value = "";
+				while(document.querySelector("input[name=template]:checked")){
+					document.querySelector("input[name=template]:checked").checked = false;
+				}
+			}
+			
 			document.getElementById("submit").onclick = function(event) {
-				
 				event.preventDefault();
-				if (empty(document.getElementById("idnome").value)
+
+				if (empty(document.getElementById("idname").value)
 						|| empty(document.getElementById("idcnpj").value)
-						|| empty(document.querySelector('input[name=template]:checked'))){
-					alert("falta preencher algo")
+						|| empty(document.querySelector('input[name=template]:checked'))) {
+					alert("something's missing!");
 					return false;
-				}	
+				}
+
 				var ajax = new XMLHttpRequest();
 				ajax.onreadystatechange = function() {
 					if (ajax.readyState == XMLHttpRequest.DONE) {
-						atualiza();
-						if (ajax.status != 204) {
-							console.log('submit ruim: ' + ajax.status);
+						updateShops();
+						if (ajax.status == 200) {
+							if(ajax.responseText == "repetido")
+								alert("CNJP already used!");
 						}
 					}
 				}
-				ajax.open("POST", "http://localhost:8080/DBRest/rest/escreve",
-						true);
+				ajax.open("POST", "http://localhost:8080/DBRest/rest/shop/add",true);
 				ajax.setRequestHeader("Content-Type", "application/json");
 				ajax.send(formToJSON());
-				
+
 			}
-			atualiza();
+			updateShops();
 		}
 	</script>
 </body>

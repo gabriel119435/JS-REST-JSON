@@ -8,6 +8,7 @@
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
+			
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
@@ -16,6 +17,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.0.0</version>
@@ -23,10 +25,12 @@
 					<warSourceDirectory>WebContent</warSourceDirectory>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-all</artifactId>
@@ -38,20 +42,14 @@
 			<artifactId>jersey-bundle</artifactId>
 			<version>1.9.1</version>
 		</dependency>
-
-		<!-- Gson: Java to Json conversion -->
+		
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.2.2</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>3.1.1</version>
-		</dependency>
+
 	</dependencies>
 
 
