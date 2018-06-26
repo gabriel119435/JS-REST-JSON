@@ -24,11 +24,11 @@ public class ShopRepo {
 		return shopList;
 	}	
 	
-	public void writeStore(Shop s){
+	public void loadShop(Shop s){
 		shop = s;
 	}
 	
-	public Shop readStore(){
+	public Shop readShop(){
 		return shop;
 	}
 	

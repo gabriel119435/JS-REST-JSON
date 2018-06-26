@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import com.google.gson.Gson;
 
 import repo.Shop;
@@ -24,14 +26,14 @@ public class ShopRest {
 	@Path("add")	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String addStore(String data) throws IOException {
-		Shop store = gson.fromJson(data, Shop.class);
+	public String addShop(String data) throws IOException {
+		Shop shop = gson.fromJson(data, Shop.class);
 		for(Shop s: repo.read()){
-			if(store.getCnpj().equals(s.getCnpj())){
+			if(shop.getCnpj().equals(s.getCnpj())){
 				return "repetido";
 			}
 		}		
-		repo.add(store);	
+		repo.add(shop);	
 		return "novo";
 	}
 
@@ -44,24 +46,26 @@ public class ShopRest {
 		return json;
 	}
 	
-	@POST
-	@Path("insert")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void insertStore(String data){
-		repo.writeStore(gson.fromJson(data, Shop.class));
-	}
-	
-	@GET
-	@Path("read")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String readStore() {
-		return gson.toJson(repo.readStore());
-	}
-	
-	@POST
+	@DELETE
 	@Path("remove")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void removeShop(String data){
 		repo.remove(data);
+	}
+	
+	//loads store into memory
+	@POST
+	@Path("load")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void loadShop(String data){
+		repo.loadShop(gson.fromJson(data, Shop.class));
+	}
+	
+	//retrieve memory store
+	@GET
+	@Path("read")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String readShop() {
+		return gson.toJson(repo.readShop());
 	}
 }

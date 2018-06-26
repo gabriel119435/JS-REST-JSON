@@ -3,39 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <title>Loja</title>
+
 <style type="text/css">
-/* The Modal (background) */
-.modalBg {
-	display: none; /* Hidden by default */
-	position: fixed; /* Stay in place with scrolls and shit */
-	z-index: 1;
-	/* Sit on top. Lower number makes this go behind of bigger numbers */
+.modalBackgroud {
+	display: none; /* hidden by default */
+	position: fixed; /* stay in place with scrolls and shit */
+	z-index: 1; /* sits on top. lower number makes this go behind of bigger numbers */
 	left: 0;
 	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+	width: 100%; /* full width */
+	height: 100%; /* full height */
+	overflow: auto; /* enable scroll if needed */
+	background-color: rgba(0, 0, 0, 0.5); /* black w/ opacity */
 }
 
-/* Modal Content/Box */
 .modal-content {
 	background-color: #ffffff;
 	margin: 15% auto; /* 15% from the top and centered */
 	padding: 10px; /* generate space around content */
 	border: 2px solid #888; /* thickness, type and color */
-	width: 70%; /* Could be more or less, depending on screen size */
+	width: 70%; /* could be more or less, depending on screen size */
 }
 
-/* The Close Button */
+/* close button */
 .close {
 	color: #aaa;
 	float: right; /*floats towards right till the end*/
-	font-size: 28px;
+	font-size: 20px;
 	font-weight: bold;
 }
 
-.close:hover, .close:focus {
+.close:hover{
 	color: black;
 	text-decoration: none;
 	cursor: pointer;
@@ -46,12 +44,13 @@
 <body>
 	<button id='idback'>go back</button>
 	<button id="idbmodal">insert new fridge</button>
-	<h1 id='id'></h1>
+	
+	<h1 id='storeDataId'></h1>
 
-	<!-- The Modal -->
-	<div id="modalBackground" class="modalBg">
+	<!-- modal -->
+	<div id="modalBackground" class="modalBackgroud">
 
-		<!-- Modal content -->
+		<!-- modal content -->
 		<div class="modal-content">
 			<span class="close" id="idclose">&times;</span>
 			<form id="idform">
@@ -61,7 +60,7 @@
 				<input type="text" id="idmodel" name="model" />
 				<input type="submit" id="submit" value="create new fridge" />
 			</form>
-			<table id="idtable"></table>
+			<p>not implemented!</p>
 		</div>
 
 	</div>
@@ -78,7 +77,7 @@
 					s += 'name:' + json.name;
 					s += ' cnpj:' + json.cnpj;
 					s += ' template:' + json.template
-					document.getElementById("id").innerHTML = s;
+					document.getElementById("storeDataId").innerHTML = s;
 					var color;
 					var position;
 					switch (json.template) {
@@ -103,7 +102,7 @@
 						position = "left";
 						break;
 					}
-					document.getElementById("id").style.textAlign = position;
+					document.getElementById("storeDataId").style.textAlign = position;
 					document.body.style.background = color;
 				}
 			}
@@ -116,6 +115,7 @@
 
 			var mb = document.getElementById('modalBackground');
 			document.getElementById("idbmodal").onclick = function() {
+				//displays as a block
 				mb.style.display = "block";
 			}
 			document.getElementById("idclose").onclick = function() {

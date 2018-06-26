@@ -54,7 +54,7 @@ public class Shop {
 	public String toString() {
 		String allfridges="";
 		for(Fridge f : fridges)
-			allfridges += f.getBrand() + "-" + f.getModel() + "-" + f.getQuantity() + "\n";
-		return this.name + "-" + this.cnpj + "-" + this.template + "\n" + allfridges + "\n\n";
+			allfridges += f.toString() + "\n";
+		return this.name + "-" + this.cnpj + "-" + this.template + "\n" +"fridges: "+ allfridges + "\n";
 	}
 }
